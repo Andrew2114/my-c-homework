@@ -1,0 +1,41 @@
+name: Build and Lint
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-format-18 clang-tidy-18 cmake build-essential
+    
+    - name: Check formatting with clang-format
+      run: |
+        find . -path ./build -prune -o -type f -name '*.[c|h]' -print | xargs clang-format-18 --style=file --dry-run -Werror
+    
+    - name: Configure CMake
+      run: |
+        cmake . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    
+    - name: Build
+      run: |
+        cmake --build build
+    
+    - name: Run clang-tidy
+      run: |
+        # Запускаем clang-tidy на всех .c файлах, используя compile_commands.json
+        find . -path ./build -prune -o -type f -name '*.c' -print | \
+          xargs -P$(nproc) -I{} clang-tidy-18 -p=build {} --quiet
+    
+    - name: Run tests
+      run: |
+        ./build/tests
