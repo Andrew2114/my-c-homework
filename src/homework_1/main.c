@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int is_number(const char *str) {
+int is_number(const char* str) {
   if (str == NULL || *str == '\0') {
     return 0;
   }
@@ -39,21 +39,21 @@ int is_number(const char *str) {
 typedef struct {
   int rows;
   int cols;
-  char ***data;
+  char*** data;
 } Table;
 
-Table *createTable() {
-  Table *t = malloc(sizeof(Table));
+Table* createTable() {
+  Table* t = malloc(sizeof(Table));
   t->data = NULL;
   t->rows = 0;
   t->cols = 0;
   return t;
 }
 
-int addRow(Table *t, char *line) {
+int addRow(Table* t, char* line) {
   int new_row_count = t->rows + 1;
 
-  char ***new_data = realloc(t->data, sizeof(char **) * new_row_count);
+  char*** new_data = realloc(t->data, sizeof(char**) * new_row_count);
   if (new_data == NULL)
     return -1;
   t->data = new_data;
@@ -62,19 +62,19 @@ int addRow(Table *t, char *line) {
   strcpy(temp, line);
 
   int col_count = 0;
-  char *token = strtok(temp, ",\n");
+  char* token = strtok(temp, ",\n");
   while (token != NULL) {
     col_count++;
     token = strtok(NULL, ",\n");
   }
 
-  t->data[t->rows] = malloc(sizeof(char *) * col_count);
+  t->data[t->rows] = malloc(sizeof(char*) * col_count);
 
   strcpy(temp, line);
   token = strtok(temp, ",\n");
   int col_index = 0;
   while (token != NULL) {
-    char *field = malloc(strlen(token) + 1);
+    char* field = malloc(strlen(token) + 1);
     strcpy(field, token);
     t->data[t->rows][col_index] = field;
 
@@ -90,7 +90,7 @@ int addRow(Table *t, char *line) {
   return 0;
 }
 
-void freeTable(Table *t) {
+void freeTable(Table* t) {
   if (t == NULL) {
     return;
   }
@@ -106,13 +106,13 @@ void freeTable(Table *t) {
   free(t);
 }
 
-int printTableToFile(Table *t, const char *filename) {
-  FILE *f = fopen(filename, "w");
+int printTableToFile(Table* t, const char* filename) {
+  FILE* f = fopen(filename, "w");
   if (f == NULL) {
     return -1;
   }
 
-  int *col_width = malloc(sizeof(int) * t->cols);
+  int* col_width = malloc(sizeof(int) * t->cols);
 
   for (int i = 0; i < t->cols; i++) {
     col_width[i] = 0;
@@ -179,14 +179,14 @@ int printTableToFile(Table *t, const char *filename) {
 
 #ifndef TEST_MODE
 int main() {
-  const char *file = "input.csv";
-  FILE *f = fopen(file, "r");
+  const char* file = "input.csv";
+  FILE* f = fopen(file, "r");
   if (f == NULL) {
     printf("Canot open file %s\n", file);
     return -1;
   }
 
-  Table *t = createTable();
+  Table* t = createTable();
   char buffer[1024];
 
   while (fgets(buffer, sizeof(buffer), f) != NULL) {
