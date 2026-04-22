@@ -1,9 +1,14 @@
 #define TEST_MODE
-#include "main.c"
-
+#include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+
+Table* createTable();
+int addRow(Table *t, char *line);
+void freeTable(Table *t);
+int printTableToFile(Table *t, const char *filename);
+int is_number(const char *str);
 
 
 void create_test_csv(const char *filename, const char *content) {
