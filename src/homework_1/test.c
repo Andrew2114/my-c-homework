@@ -1,15 +1,14 @@
 #define TEST_MODE
-#include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-Table* createTable();
+Table *createTable();
 int addRow(Table *t, char *line);
 void freeTable(Table *t);
 int printTableToFile(Table *t, const char *filename);
 int is_number(const char *str);
-
 
 void create_test_csv(const char *filename, const char *content) {
   FILE *f = fopen(filename, "w");
@@ -136,9 +135,9 @@ void run_tests() {
 
 // main для тестов
 int main() {
-    run_tests();
-    return 0;
-}
   run_tests();
   return 0;
+}
+run_tests();
+return 0;
 }
