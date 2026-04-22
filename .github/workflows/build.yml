@@ -1,0 +1,55 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # позволяет запускать вручную
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Install clang-format
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq clang-format-18
+    
+    - name: Check formatting
+      run: |
+        echo "Checking code formatting..."
+        find . -name "*.c" -not -path "./build/*" | xargs clang-format-18 --dry-run --Werror
+    
+    - name: Configure CMake
+      run: |
+        mkdir -p build
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
+    
+    - name: Build
+      run: |
+        cmake --build build --parallel 2
+    
+    - name: Run tests
+      run: |
+        echo "Running tests..."
+        ./build/tests
+    
+    - name: Run main program (optional)
+      run: |
+        # Создаем тестовый CSV файл
+        echo "Name,Age,City" > input.csv
+        echo "Alice,25,New York" >> input.csv
+        echo "Bob,30,Los Angeles" >> input.csv
+        echo "Charlie,35,Chicago" >> input.csv
+        
+        # Запускаем программу
+        ./build/my_program
+        
+        # Показываем результат
+        echo "Output table:"
+        cat output.txt || echo "No output.txt found"
