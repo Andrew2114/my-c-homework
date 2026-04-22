@@ -7,12 +7,10 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # Основная программа
 add_executable(my_program src/homework_1/main.c)
 
-# Тесты (линкуем с main.c, чтобы были доступны функции)
+# Тесты - компилируем с флагом TEST_MODE
 add_executable(tests src/homework_1/test.c src/homework_1/main.c)
+target_compile_definitions(tests PRIVATE TEST_MODE)
 
 # Флаги компиляции
 target_compile_options(my_program PRIVATE -Wall -Wextra)
-target_compile_options(tests PRIVATE -Wall -Wextra)
-
-# Чтобы тесты могли использовать функции из main.c
-target_include_directories(tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/homework_1)
+target_compile_options(tests PRIVATE -Wall -Wextra -Wno-unused-but-set-variable)
